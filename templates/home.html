@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CSS -->
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .container {
+        max-width: 1800px; /* Définir la largeur maximale du conteneur */
+        margin: auto; /* Centrer le conteneur horizontalement */
+        }
+
+        .user-card {
+            width: 80px; /* Largeur de la carte */
+            height: 40px; /* Largeur de la carte */
+            display: flex; /* Utilisation de Flexbox */
+            align-items: center; /* Centrage vertical */
+            justify-content: center; /* Centrage horizontal */
+        }
+
+        .patrol-card {
+            width: 100px; /* Largeur de la carte */
+            display: flex; /* Utilisation de Flexbox */
+            align-items: center; /* Centrage vertical */
+            justify-content: center; /* Centrage horizontal */
+        }
+
+        .bg-lssd {
+            background-color: #14842D; /* Remplacez #007bff par le code couleur de votre choix */
+            color: #FFD700; /* Couleur du texte */
+        }
+
+        .bg-lspd {
+            background-color: #161A6D; /* Remplacez #007bff par le code couleur de votre choix */
+            color: #FFD700; /* Couleur du texte */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">DISPATCH</h1>
+        <br>
+
+        <button class="btn btn-secondary waiting-button mb-3 w-75" data-patrol-id="0">
+            <h5 class="card-title">EN ATTENTE DE DISPATCH</h5>
+            {% for user in users_waiting %}
+                <div class="card mb-3 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}">
+                    <div class="card-body text-center">
+                        <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </button>
+
+        <div class="row justify-content-around">
+
+            <div class="card bg-light mb-3 col-md-5" id="active-card">
+                <div class="card-body">
+                    <h5 class="card-title">SUR LE TERRAIN</h5>
+    
+                    <form action="/create_patrol" method="POST">
+                        <button class="btn btn-secondary mt-3 mb-3" type="submit">Nouvelle patrouille</button>
+                    </form>
+    
+                    <div class="row">
+                        {% for patrol in patrols %}
+                            {% if patrol.intervention_id == 0 %}
+                                <div class="col-md-4">
+                                    <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
+                                    <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
+                                        {% if patrol.users|length == 1 %}
+                                            <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                        {% elif patrol.users|length == 2 %}
+                                            <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                        {% elif patrol.users|length == 3 %}
+                                            <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                        {% endif %}
+                                        {% for user in patrol.users %}
+                                            <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
+                                                <div class="card-body text-center">
+                                                    <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-light mb-3 col-md-5">
+                <div class="card-body">
+                    <h5 class="card-title">INTERVENTIONS</h5>
+                    <br>
+    
+                    {% if role == 'admin' %}
+                        <form action="/create_intervention" method="POST">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="interventionName" name="interventionName" placeholder="Nom de l'intervention" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary btn-block">Créer</button>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+    
+                    <br>
+    
+                    <div class="row">
+                        {% for intervention in interventions %}
+                        <div class="col-md-12">
+                            <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}">
+                                <div class="card-body row justify-content-around">
+                                    <h6 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
+                                    <input type="hidden" name="inter_id" value="{{ intervention.id }}">
+                                    <button type="submit" class="btn btn-info btn-sm join-inter-button" id="inter-{{ intervention.id }}">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                    <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="row">
+                                    {% for patrol in patrols %}
+                                        {% if patrol.intervention_id == intervention.id %}
+                                            <div class="col-md-4">
+                                                <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
+                                                <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
+                                                    {% if patrol.users|length == 1 %}
+                                                        <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                                    {% elif patrol.users|length == 2 %}
+                                                        <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                                    {% elif patrol.users|length == 3 %}
+                                                        <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                                    {% endif %}
+                                                    {% for user in patrol.users %}
+                                                        <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
+                                                            <div class="card-body text-center">
+                                                                <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var waitingCard = document.getElementById("attente-card");
+
+        waitingCard.addEventListener("click", function() {
+            window.location.href = "/join_patrol/" + 0;
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patrolButtons = document.querySelectorAll('.patrol-button');
+            
+            patrolButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var patrolId = this.id.split('-')[1];
+                    window.location.href = '/join_patrol/' + patrolId;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var waitingButtons = document.querySelectorAll('.waiting-button');
+            
+            waitingButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var patrolId = this.getAttribute('data-patrol-id');
+                    window.location.href = '/join_patrol/' + patrolId;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteInterButtons = document.querySelectorAll('.delete-inter-button');
+            
+            deleteInterButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var interId = this.id.split('-')[1];
+                    window.location.href = '/delete_intervention/' + interId;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteInterButtons = document.querySelectorAll('.join-inter-button');
+            
+            deleteInterButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var interId = this.id.split('-')[1];
+                    window.location.href = '/join_intervention/' + interId;
+                });
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> <!-- Popper.js -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
+</body>
+</html>
