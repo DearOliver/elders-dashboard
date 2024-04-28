@@ -58,6 +58,18 @@
             background-color: #6F5205;
         }
 
+        .bg-db {
+            background-color: #cccccc;
+        }
+
+        .bg-clear {
+            background-color: #ffffff;
+        }
+
+        .bg-otages {
+            background-color: #629c89;
+        }
+
         .draggable {
             cursor: move;
         }
@@ -87,16 +99,17 @@
                 <div class="card-body">
                     <h5 class="card-title">SUR LE TERRAIN</h5>
 
-                    <div class="row justify-content-around">
-                        <div class="col-md-12">
-                            <button class="btn bg-standard btn-lg" id="standard-patrol"><i class="fa-solid fa-car"></i></button>
-                            <button class="btn bg-mary btn-lg" id="mary-patrol"><i class="fa-solid fa-motorcycle"></i></button>
-                            <button class="btn bg-henry btn-lg" id="henry-patrol"><i class="fa-solid fa-helicopter"></i></button>
-                            <button class="btn bg-vir btn-lg" id="vir-patrol"><i class="fa-solid fa-bolt"></i></button>
-                            <button class="btn bg-inter btn-lg" id="inter-patrol"><i class="fa-solid fa-person-rifle"></i></button>
-                            <button class="btn bg-pr btn-lg" id="pr-patrol"><i class="fa-solid fa-paw"></i></button>
+                    {% if role == 'admin' %}
+                        <div class="row justify-content-around mb-3">
+                            <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="terrain"><i class="fa-solid fa-car"></i></button>
+                            <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="terrain"><i class="fa-solid fa-motorcycle"></i></button>
+                            <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="terrain"><i class="fa-solid fa-helicopter"></i></button>
+                            <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="terrain"><i class="fa-solid fa-bolt"></i></button>
+                            <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="terrain"><i class="fa-solid fa-person-rifle"></i></button>
+                            <button class="btn bg-pr btn-lg patrol-type-card" patrol-type="pr" type="terrain"><i class="fa-solid fa-paw"></i></button>
+                            <button class="btn bg-db btn-lg patrol-type-card" patrol-type="db" type="terrain"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
-                    </div>
+                    {% endif %}
     
                     <div class="row">
                         {% for patrol in patrols %}
@@ -104,13 +117,29 @@
                                 {% if patrol.id != 0 %}
                                     <div class="col-md-4">
                                         <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                        <button class="btn mb-3 patrol-button patrol-card {% if patrol.type == 'standard' %}bg-standard{% elif patrol.type == 'henry' %}bg-henry{% elif patrol.type == 'mary' %}bg-mary{% elif patrol.type == 'vir' %}bg-vir{% elif patrol.type == 'inter' %}bg-inter{% elif patrol.type == 'pr' %}bg-pr{% endif %}" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
-                                            {% if patrol.users|length == 1 %}
-                                                <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
-                                            {% elif patrol.users|length == 2 %}
-                                                <h6 class="card-text">Adam #{{ patrol.id }}</h6>
-                                            {% elif patrol.users|length == 3 %}
-                                                <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                        <button class="btn mb-3 patrol-button patrol-card {% if patrol.type == 'standard' %}bg-standard{% elif patrol.type == 'henry' %}bg-henry{% elif patrol.type == 'mary' %}bg-mary{% elif patrol.type == 'vir' %}bg-vir{% elif patrol.type == 'inter' %}bg-inter{% elif patrol.type == 'pr' %}bg-pr{% elif patrol.type == 'db' %}bg-db{% endif %}" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
+                                            {% if patrol.type == 'standard' %}
+                                                {% if patrol.users|length == 1 %}
+                                                    <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                                {% elif patrol.users|length == 2 %}
+                                                    <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                                {% elif patrol.users|length == 3 %}
+                                                    <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                                {% elif patrol.users|length == 4 %}
+                                                    <h6 class="card-text">Xray #{{ patrol.id }}</h6>
+                                                {% endif %}
+                                            {% elif patrol.type == 'henry' %}
+                                                <h6 class="card-text">Henry #{{ patrol.id }}</h6>
+                                            {% elif patrol.type == 'mary' %}
+                                                <h6 class="card-text">Mary #{{ patrol.id }}</h6>
+                                            {% elif patrol.type == 'vir' %}
+                                                <h6 class="card-text">VIR #{{ patrol.id }}</h6>
+                                            {% elif patrol.type == 'db' %}
+                                                <h6 class="card-text">DB #{{ patrol.id }}</h6>
+                                            {% elif patrol.type == 'pr' %}
+                                                <h6 class="card-text">Ranger #{{ patrol.id }}</h6>
+                                            {% elif patrol.type == 'inter' %}
+                                                <h6 class="card-text">SWAT/SEB #{{ patrol.id }}</h6>
                                             {% endif %}
                                             {% for user in patrol.users %}
                                                 <div class="card mb-1 draggable user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
@@ -154,12 +183,21 @@
                                 <div class="col-md-12">
                                     <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}" value ="{{ intervention.id }}"">
                                         <div class="card-body row justify-content-around">
-                                            <h6 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
+                                            <h5 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
                                             <input type="hidden" name="inter_id" value="{{ intervention.id }}">
                                             {% if role == 'admin' %}
-                                                <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <div class="row w-100 justify-content-around mt-2 mb-3">
+                                                    <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-car"></i></button>
+                                                    <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-motorcycle"></i></button>
+                                                    <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-helicopter"></i></button>
+                                                    <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-bolt"></i></button>
+                                                    <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-person-rifle"></i></button>
+                                                    <button class="btn bg-otages btn-lg patrol-type-card" patrol-type="otages" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-suitcase-medical"></i></button>
+                                                    <button class="btn bg-clear btn-lg patrol-type-card" patrol-type="clear" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-broom"></i></button>
+                                                    <button type="submit" class="btn btn-danger btn-lg delete-inter-button" id="inter-{{ intervention.id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             {% endif %}
                                         </div>
                                         <div class="row">
@@ -168,16 +206,32 @@
                                                     {% if patrol.id != 0 %}
                                                         <div class="col-md-4">
                                                             <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                                            <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
-                                                                {% if patrol.users|length == 1 %}
-                                                                    <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
-                                                                {% elif patrol.users|length == 2 %}
-                                                                    <h6 class="card-text">Adam #{{ patrol.id }}</h6>
-                                                                {% elif patrol.users|length == 3 %}
-                                                                    <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                                            <button class="btn mb-3 patrol-button patrol-card {% if patrol.type == 'standard' %}bg-standard{% elif patrol.type == 'henry' %}bg-henry{% elif patrol.type == 'mary' %}bg-mary{% elif patrol.type == 'vir' %}bg-vir{% elif patrol.type == 'inter' %}bg-inter{% elif patrol.type == 'pr' %}bg-pr{% elif patrol.type == 'db' %}bg-db{% elif patrol.type == 'clear' %}bg-clear{% elif patrol.type == 'otages' %}bg-otages{% endif %}" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
+                                                                {% if patrol.type == 'standard' %}
+                                                                    {% if patrol.users|length == 1 %}
+                                                                        <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                                                    {% elif patrol.users|length == 2 %}
+                                                                        <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                                                    {% elif patrol.users|length == 3 %}
+                                                                        <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                                                    {% elif patrol.users|length == 4 %}
+                                                                        <h6 class="card-text">Xray #{{ patrol.id }}</h6>
+                                                                    {% endif %}
+                                                                {% elif patrol.type == 'henry' %}
+                                                                    <h6 class="card-text">Henry #{{ patrol.id }}</h6>
+                                                                {% elif patrol.type == 'mary' %}
+                                                                    <h6 class="card-text">Mary #{{ patrol.id }}</h6>
+                                                                {% elif patrol.type == 'vir' %}
+                                                                    <h6 class="card-text">VIR #{{ patrol.id }}</h6>
+                                                                {% elif patrol.type == 'clear' %}
+                                                                    <h6 class="card-text">Clear #{{ patrol.id }}</h6>
+                                                                {% elif patrol.type == 'otages' %}
+                                                                    <h6 class="card-text">Ass. Otages #{{ patrol.id }}</h6>
+                                                                {% elif patrol.type == 'inter' %}
+                                                                    <h6 class="card-text">SWAT/SEB #{{ patrol.id }}</h6>
                                                                 {% endif %}
                                                                 {% for user in patrol.users %}
-                                                                    <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
+                                                                    <div class="card mb-1 draggable user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
                                                                         <div class="card-body text-center">
                                                                             <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
                                                                         </div>
@@ -204,18 +258,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             var userCards = document.querySelectorAll('.user-card');
 
-            var standard_patrol_card = document.getElementById('standard-patrol');
-            var mary_patrol_card = document.getElementById('mary-patrol');
-            var henry_patrol_card = document.getElementById('henry-patrol');
-            var vir_patrol_card = document.getElementById('vir-patrol');
-            var inter_patrol_card = document.getElementById('inter-patrol');
-            var pr_patrol_card = document.getElementById('pr-patrol');
+            var patrol_type_cards = document.querySelectorAll('.patrol-type-card');
 
             var waiting_card = document.getElementById('waiting-card');
             var patrol_cards = document.querySelectorAll('.patrol-card');
-            var intervention_cards = document.querySelectorAll('.intervention-card');
 
             var draggedUserId = null;
+            var patrol_type = null;
             var patrol_id = null;
 
             userCards.forEach(function(card) {
@@ -230,87 +279,34 @@
                 });
             });
 
-            intervention_cards.forEach(function(card) {
+            patrol_type_cards.forEach(function(card) {
                 card.addEventListener('dragover', function(event) {
                     event.preventDefault();
                 });
             });
 
-            standard_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-            mary_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-            henry_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-            vir_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-            inter_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-            pr_patrol_card.addEventListener('dragover', function(event) {
-                event.preventDefault();
-            });
-
-
             waiting_card.addEventListener('dragover', function(event) {
                 event.preventDefault();
             });
 
-            standard_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/standard';
-                    draggedUserId = null;
-                }
-            });
-
-            mary_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/mary';
-                    draggedUserId = null;
-                }
-            });
-
-            henry_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/henry';
-                    draggedUserId = null;
-                }
-            });
-
-            vir_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/vir';
-                    draggedUserId = null;
-                }
-            });
-
-            inter_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/inter';
-                    draggedUserId = null;
-                }
-            });
-
-            pr_patrol_card.addEventListener('drop', function(event) {
-                event.preventDefault();
-                if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId + '/pr';
-                    draggedUserId = null;
-                }
+            patrol_type_cards.forEach(function(card) {
+                card.addEventListener('drop', function(event) {
+                    event.preventDefault();
+                    patrol_type = card.getAttribute('patrol-type')
+                    if (draggedUserId) {
+                        if (card.getAttribute('type') == 'terrain') 
+                        {
+                            window.location.href = '/create_patrol/' + draggedUserId + '/' + patrol_type;
+                            draggedUserId = null;
+                        
+                        } else {
+                            intervention_id = card.getAttribute('value')
+                            window.location.href = '/drop_intervention/' + draggedUserId + '/' + intervention_id + '/' + patrol_type;
+                            draggedUserId = null; 
+                            intervention_id = null; 
+                        }
+                    }
+                });
             });
 
             waiting_card.addEventListener('drop', function(event) {
@@ -332,18 +328,6 @@
                     }
                 }
                 );
-            });
-
-            intervention_cards.forEach(function(card) {
-                card.addEventListener('drop', function(event) {
-                    intervention_id = card.getAttribute('value')
-                    event.preventDefault();
-                    if (draggedUserId) {
-                        window.location.href = '/drop_intervention/' + draggedUserId + '/' + intervention_id;
-                        draggedUserId = null; 
-                        intervention_id = null; 
-                    }
-                });
             });
         });
     </script>

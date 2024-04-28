@@ -173,9 +173,9 @@ def join_patrol(patrol_id):
     else:
         return redirect(url_for("login"))
     
-@app.route("/drop_intervention/<int:user_id>/<int:intervention_id>")
-def drop_intervention(user_id, intervention_id):
-    new_patrol = Patrol(intervention_id=intervention_id)
+@app.route("/drop_intervention/<int:user_id>/<int:intervention_id>/<string:patrol_type>")
+def drop_intervention(user_id, intervention_id, patrol_type):
+    new_patrol = Patrol(intervention_id=intervention_id, type = patrol_type)
 
     db.session.add(new_patrol)
     db.session.commit()
