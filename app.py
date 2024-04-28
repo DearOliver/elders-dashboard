@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ucqnhvk6u5rvsr:p90d1e1fcd767495447f50c9db8447f74bed656c9882c6dc3d1de7cb392ace2ca@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d50i6d64k7h43f'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ucqnhvk6u5rvsr:p90d1e1fcd767495447f50c9db8447f74bed656c9882c6dc3d1de7cb392ace2ca@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com/d50i6d64k7h43f'
 db = SQLAlchemy(app)
 port = int(os.environ.get("PORT", 5000))
 
