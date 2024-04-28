@@ -24,13 +24,6 @@
             justify-content: center; /* Centrage horizontal */
         }
 
-        .patrol-card {
-            width: 100px; /* Largeur de la carte */
-            display: flex; /* Utilisation de Flexbox */
-            align-items: center; /* Centrage vertical */
-            justify-content: center; /* Centrage horizontal */
-        }
-
         .bg-lssd {
             background-color: #14842D; /* Remplacez #007bff par le code couleur de votre choix */
             color: #FFD700; /* Couleur du texte */
@@ -40,6 +33,10 @@
             background-color: #161A6D; /* Remplacez #007bff par le code couleur de votre choix */
             color: #FFD700; /* Couleur du texte */
         }
+
+        .draggable {
+            cursor: move;
+        }
     </style>
 </head>
 <body>
@@ -47,15 +44,17 @@
         <h1 class="mt-5">DISPATCH</h1>
         <br>
 
-        <button class="btn btn-secondary waiting-button mb-3 w-75" data-patrol-id="0">
+        <button class="btn btn-secondary waiting-button mb-3 w-75" id = "waiting-card">
             <h5 class="card-title">EN ATTENTE DE DISPATCH</h5>
-            {% for user in users_waiting %}
-                <div class="card mb-3 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}">
-                    <div class="card-body text-center">
-                        <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+            <div class = "row m-2 justify-content-right">
+                {% for user in users_waiting %}
+                    <div class="card draggable user-card mr-2 ml-2 d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
+                        <div class="card-body text-center">
+                            <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </button>
 
         <div class="row justify-content-around">
@@ -64,16 +63,12 @@
                 <div class="card-body">
                     <h5 class="card-title">SUR LE TERRAIN</h5>
     
-                    <form action="/create_patrol" method="POST">
-                        <button class="btn btn-secondary mt-3 mb-3" type="submit">Nouvelle patrouille</button>
-                    </form>
-    
                     <div class="row">
                         {% for patrol in patrols %}
                             {% if patrol.intervention_id == 0 %}
                                 <div class="col-md-4">
                                     <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                    <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
+                                    <button class="btn btn-secondary mb-3 patrol-button patrol-card" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
                                         {% if patrol.users|length == 1 %}
                                             <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
                                         {% elif patrol.users|length == 2 %}
@@ -82,7 +77,7 @@
                                             <h6 class="card-text">Tango #{{ patrol.id }}</h6>
                                         {% endif %}
                                         {% for user in patrol.users %}
-                                            <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
+                                            <div class="card mb-1 draggable user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
                                                 <div class="card-body text-center">
                                                     <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
                                                 </div>
@@ -119,16 +114,15 @@
                     <div class="row">
                         {% for intervention in interventions %}
                         <div class="col-md-12">
-                            <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}">
+                            <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}" value ="{{ intervention.id }}"">
                                 <div class="card-body row justify-content-around">
                                     <h6 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
                                     <input type="hidden" name="inter_id" value="{{ intervention.id }}">
-                                    <button type="submit" class="btn btn-info btn-sm join-inter-button" id="inter-{{ intervention.id }}">
-                                        <i class="fas fa-plus-circle"></i>
-                                    </button>
-                                    <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    {% if role == 'admin' %}
+                                        <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    {% endif %}
                                 </div>
                                 <div class="row">
                                     {% for patrol in patrols %}
@@ -166,10 +160,79 @@
     </div>
 
     <script>
-        var waitingCard = document.getElementById("attente-card");
+        document.addEventListener('DOMContentLoaded', function() {
+            var userCards = document.querySelectorAll('.user-card');
+            
+            var on_terrain_card = document.getElementById('active-card');
+            var waiting_card = document.getElementById('waiting-card');
+            var patrol_cards = document.querySelectorAll('.patrol-card');
+            var intervention_cards = document.querySelectorAll('.intervention-card');
 
-        waitingCard.addEventListener("click", function() {
-            window.location.href = "/join_patrol/" + 0;
+            var draggedUserId = null;
+            var patrol_id = null;
+
+            userCards.forEach(function(card) {
+                card.addEventListener('dragstart', function(event) {
+                    draggedUserId = card.getAttribute('data-user-id')
+                });
+            });
+
+            patrol_cards.forEach(function(card) {
+                card.addEventListener('dragover', function(event) {
+                    event.preventDefault();
+                });
+            });
+
+            intervention_cards.forEach(function(card) {
+                card.addEventListener('dragover', function(event) {
+                    event.preventDefault();
+                });
+            });
+
+            on_terrain_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            waiting_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            on_terrain_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId;
+                    draggedUserId = null;
+                }
+            });
+
+            waiting_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/drop_patrol/' + draggedUserId + '/' + 0;
+                    draggedUserId = null; 
+                }
+            });
+
+            patrol_cards.forEach(function(card) {
+                card.addEventListener('drop', function(event) {
+                    patrol_id = card.getAttribute('value')
+                    draggedUserId = null; 
+                    patrol_id = null; 
+                }
+                );
+            });
+
+            intervention_cards.forEach(function(card) {
+                card.addEventListener('drop', function(event) {
+                    intervention_id = card.getAttribute('value')
+                    event.preventDefault();
+                    if (draggedUserId) {
+                    window.location.href = '/drop_intervention/' + draggedUserId + '/' + intervention_id;
+                    draggedUserId = null; 
+                    intervention_id = null; 
+                }
+                });
+            });
         });
     </script>
 
@@ -192,8 +255,7 @@
             
             waitingButtons.forEach(function(button) {
                 button.addEventListener('click', function() {
-                    var patrolId = this.getAttribute('data-patrol-id');
-                    window.location.href = '/join_patrol/' + patrolId;
+                    window.location.href = '/join_patrol/' + 0;
                 });
             });
         });

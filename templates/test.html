@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag and Drop Example</title>
+<style>
+  .user-button {
+    width: 100px;
+    height: 50px;
+    background-color: #007bff;
+    color: #ffffff;
+    text-align: center;
+    line-height: 50px;
+    cursor: move;
+  }
+  .droppable-area {
+    width: 300px;
+    height: 200px;
+    background-color: #f2f2f2;
+    border: 2px dashed #cccccc;
+  }
+</style>
+</head>
+<body>
+
+<div id="draggable" class="user-button" draggable="true">Drag Me</div>
+
+<div id="droppable" class="droppable-area"></div>
+
+<script>
+    const draggable = document.getElementById('draggable');
+    const droppable = document.getElementById('droppable');
+
+    // Event listeners for draggable element
+    draggable.addEventListener('dragstart', (event) => {
+    event.dataTransfer.setData('text/plain', event.target.id);
+    });
+
+    // Event listeners for droppable area
+    droppable.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    });
+
+    droppable.addEventListener('drop', (event) => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const draggedElement = document.getElementById(data);
+    droppable.appendChild(draggedElement);
+    });
+</script>
+
+</body>
+</html>

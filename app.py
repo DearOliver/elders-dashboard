@@ -15,6 +15,7 @@ class User(db.Model):
     matricule = db.Column(db.Integer, nullable=False)
     patrol_id = db.Column(db.Integer, db.ForeignKey('patrol.id'))
     role = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(200))
 
 class Patrol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +30,10 @@ class Intervention(db.Model):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/test")
+def test():
+    return render_template("test.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -62,16 +67,15 @@ def home():
     else:
         return redirect(url_for("login"))
     
-@app.route("/create_patrol", methods=["POST"])
-def create_patrol():
-    new_patrol = Patrol()
+@app.route("/create_patrol/<int:user_id>")
+def create_patrol(user_id):
+    new_patrol = Patrol(intervention_id=0)
 
     db.session.add(new_patrol)
     db.session.commit()
 
     new_patrol_id = new_patrol.id
 
-    user_id = session.get("user_id")
     user = User.query.get(user_id)
     user.patrol_id = new_patrol_id
     db.session.commit()
@@ -139,6 +143,19 @@ def join_intervention(intervention_id):
     else:
         return redirect(url_for("login"))
 
+@app.route("/drop_patrol/<int:user_id>/<int:patrol_id>")
+def drop_patrol(user_id, patrol_id):
+    user = User.query.get(user_id)
+    user.patrol_id = patrol_id
+    db.session.commit()
+
+    patrols = Patrol.query.all()
+    for patrol in patrols :
+        if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
+            Patrol.query.filter_by(id=patrol.id).delete()
+
+    return redirect(url_for("home"))
+
 @app.route("/join_patrol/<int:patrol_id>")
 def join_patrol(patrol_id):
     if "user_id" in session:
@@ -156,6 +173,27 @@ def join_patrol(patrol_id):
         return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
+    
+@app.route("/drop_intervention/<int:user_id>/<int:intervention_id>")
+def drop_intervention(user_id, intervention_id):
+    print("TEST ", intervention_id)
+    new_patrol = Patrol(intervention_id=intervention_id)
+
+    db.session.add(new_patrol)
+    db.session.commit()
+
+    new_patrol_id = new_patrol.id
+
+    user = User.query.get(user_id)
+    user.patrol_id = new_patrol_id
+    db.session.commit()
+
+    patrols = Patrol.query.all()
+    for patrol in patrols :
+        if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
+            Patrol.query.filter_by(id=patrol.id).delete()
+
+    return redirect(url_for("home"))
 
 if __name__ == "__main__" :
     app.run(debug = True)
