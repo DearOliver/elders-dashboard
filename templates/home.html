@@ -221,6 +221,7 @@
 
             patrol_cards.forEach(function(card) {
                 card.addEventListener('drop', function(event) {
+                    console.log("TEST")
                     patrol_id = card.getAttribute('value')
                     draggedUserId = null; 
                     patrol_id = null; 
@@ -237,19 +238,6 @@
                     draggedUserId = null; 
                     intervention_id = null; 
                 }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var patrolButtons = document.querySelectorAll('.patrol-button');
-            
-            patrolButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var patrolId = this.id.split('-')[1];
-                    window.location.href = '/join_patrol/' + patrolId;
                 });
             });
         });
@@ -275,19 +263,6 @@
                 button.addEventListener('click', function() {
                     var interId = this.id.split('-')[1];
                     window.location.href = '/delete_intervention/' + interId;
-                });
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var deleteInterButtons = document.querySelectorAll('.join-inter-button');
-            
-            deleteInterButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var interId = this.id.split('-')[1];
-                    window.location.href = '/join_intervention/' + interId;
                 });
             });
         });
