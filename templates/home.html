@@ -34,6 +34,30 @@
             color: #FFD700; /* Couleur du texte */
         }
 
+        .bg-standard {
+            background-color: #FEFFAD;
+        }
+
+        .bg-mary {
+            background-color: #D3FFAD;
+        }
+
+        .bg-henry {
+            background-color: #ADFFFA;
+        }
+
+        .bg-vir {
+            background-color: #C862FF;
+        }
+
+        .bg-inter {
+            background-color: #FF0000;
+        }
+
+        .bg-pr {
+            background-color: #6F5205;
+        }
+
         .draggable {
             cursor: move;
         }
@@ -62,6 +86,17 @@
             <div class="card bg-light mb-3 col-md-5" id="active-card">
                 <div class="card-body">
                     <h5 class="card-title">SUR LE TERRAIN</h5>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn bg-standard"><i class="fa-solid fa-car"></i></i></button>
+                            <button class="btn bg-mary"><i class="fa-solid fa-motorcycle"></i></i></i></button>
+                            <button class="btn bg-henry"><i class="fa-solid fa-helicopter"></i></i></i></button>
+                            <button class="btn bg-vir"><i class="fa-solid fa-bolt"></i></i></button>
+                            <button class="btn bg-inter"><i class="fa-solid fa-person-rifle"></i></i></button>
+                            <button class="btn bg-pr"><i class="fa-solid fa-paw"></i></i></button>
+                        </div>
+                    </div>
     
                     <div class="row">
                         {% for patrol in patrols %}
