@@ -29,6 +29,13 @@ class Intervention(db.Model):
     name = db.Column(db.String(50), nullable=False)
     patrols = db.relationship('Patrol', backref='intervention')
 
+def cleanup_patrols() :
+    patrols = Patrol.query.all()
+    for patrol in patrols:
+        if User.query.filter_by(patrol_id=patrol.id).count() == 0:
+            Patrol.query.filter_by(id=patrol.id).delete()
+    db.session.commit()
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -78,12 +85,7 @@ def create_patrol(user_id):
     user.patrol_id = new_patrol_id
     db.session.commit()
 
-    patrols = Patrol.query.all()
-    for patrol in patrols :
-        print("TEST : ", patrol.id)
-        if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
-            print("TRUE")
-            Patrol.query.filter_by(id=patrol.id).delete()
+    cleanup_patrols()
 
     return redirect(url_for("home"))
 
@@ -95,6 +97,8 @@ def create_intervention():
 
     db.session.add(new_intervention)
     db.session.commit()
+
+    cleanup_patrols()
 
     return redirect(url_for("home"))
 
@@ -115,6 +119,8 @@ def delete_intervention(intervention_id):
 
         Intervention.query.filter_by(id=intervention_id).delete()
 
+        cleanup_patrols()
+
         return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
@@ -134,10 +140,7 @@ def join_intervention(intervention_id):
         user.patrol_id = new_patrol_id
         db.session.commit()
 
-        patrols = Patrol.query.all()
-        for patrol in patrols :
-            if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
-                Patrol.query.filter_by(id=patrol.id).delete()
+        cleanup_patrols()
 
         return redirect(url_for("home"))
     else:
@@ -149,10 +152,7 @@ def drop_patrol(user_id, patrol_id):
     user.patrol_id = patrol_id
     db.session.commit()
 
-    patrols = Patrol.query.all()
-    for patrol in patrols :
-        if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
-            Patrol.query.filter_by(id=patrol.id).delete()
+    cleanup_patrols()
 
     return redirect(url_for("home"))
 
@@ -165,10 +165,7 @@ def join_patrol(patrol_id):
         user.patrol_id = patrol_id
         db.session.commit()
 
-        patrols = Patrol.query.all()
-        for patrol in patrols :
-            if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
-                Patrol.query.filter_by(id=patrol.id).delete()
+        cleanup_patrols()
 
         return redirect(url_for("home"))
     else:
@@ -176,7 +173,6 @@ def join_patrol(patrol_id):
     
 @app.route("/drop_intervention/<int:user_id>/<int:intervention_id>")
 def drop_intervention(user_id, intervention_id):
-    print("TEST ", intervention_id)
     new_patrol = Patrol(intervention_id=intervention_id)
 
     db.session.add(new_patrol)
@@ -188,10 +184,7 @@ def drop_intervention(user_id, intervention_id):
     user.patrol_id = new_patrol_id
     db.session.commit()
 
-    patrols = Patrol.query.all()
-    for patrol in patrols :
-        if User.query.filter_by(patrol_id=patrol.id).count() == 0 :
-            Patrol.query.filter_by(id=patrol.id).delete()
+    cleanup_patrols()
 
     return redirect(url_for("home"))
 
