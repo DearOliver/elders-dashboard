@@ -36,12 +36,10 @@
 
         .bg-standard {
             background-color: #FEFFAD;
-            color: #FFFFFF;
         }
 
         .bg-mary {
             background-color: #D3FFAD;
-            color: #111111;
         }
 
         .bg-henry {
@@ -89,14 +87,14 @@
                 <div class="card-body">
                     <h5 class="card-title">SUR LE TERRAIN</h5>
 
-                    <div class="row">
+                    <div class="row justify-content-around">
                         <div class="col-md-12">
-                            <button class="btn bg-standard btn-sm"><i class="fa-solid fa-car"></i></button>
-                            <button class="btn bg-mary btn-sm"><i class="fa-solid fa-motorcycle"></i></button>
-                            <button class="btn bg-henry btn-sm"><i class="fa-solid fa-helicopter"></i></button>
-                            <button class="btn bg-vir btn-sm"><i class="fa-solid fa-bolt"></i></button>
-                            <button class="btn bg-inter btn-sm"><i class="fa-solid fa-person-rifle"></i></button>
-                            <button class="btn bg-pr btn-sm"><i class="fa-solid fa-paw"></i></button>
+                            <button class="btn bg-standard btn-lg" id="standard-patrol"><i class="fa-solid fa-car"></i></button>
+                            <button class="btn bg-mary btn-lg" id="mary-patrol"><i class="fa-solid fa-motorcycle"></i></button>
+                            <button class="btn bg-henry btn-lg" id="henry-patrol"><i class="fa-solid fa-helicopter"></i></button>
+                            <button class="btn bg-vir btn-lg" id="vir-patrol"><i class="fa-solid fa-bolt"></i></button>
+                            <button class="btn bg-inter btn-lg" id="inter-patrol"><i class="fa-solid fa-person-rifle"></i></button>
+                            <button class="btn bg-pr btn-lg" id="pr-patrol"><i class="fa-solid fa-paw"></i></button>
                         </div>
                     </div>
     
@@ -106,7 +104,7 @@
                                 {% if patrol.id != 0 %}
                                     <div class="col-md-4">
                                         <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                        <button class="btn btn-secondary mb-3 patrol-button patrol-card" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
+                                        <button class="btn mb-3 patrol-button patrol-card {% if patrol.type == 'standard' %}bg-standard{% elif patrol.type == 'henry' %}bg-henry{% elif patrol.type == 'mary' %}bg-mary{% elif patrol.type == 'vir' %}bg-vir{% elif patrol.type == 'inter' %}bg-inter{% elif patrol.type == 'pr' %}bg-pr{% endif %}" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
                                             {% if patrol.users|length == 1 %}
                                                 <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
                                             {% elif patrol.users|length == 2 %}
@@ -205,8 +203,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var userCards = document.querySelectorAll('.user-card');
-            
-            var on_terrain_card = document.getElementById('active-card');
+
+            var standard_patrol_card = document.getElementById('standard-patrol');
+            var mary_patrol_card = document.getElementById('mary-patrol');
+            var henry_patrol_card = document.getElementById('henry-patrol');
+            var vir_patrol_card = document.getElementById('vir-patrol');
+            var inter_patrol_card = document.getElementById('inter-patrol');
+            var pr_patrol_card = document.getElementById('pr-patrol');
+
             var waiting_card = document.getElementById('waiting-card');
             var patrol_cards = document.querySelectorAll('.patrol-card');
             var intervention_cards = document.querySelectorAll('.intervention-card');
@@ -232,18 +236,79 @@
                 });
             });
 
-            on_terrain_card.addEventListener('dragover', function(event) {
+            standard_patrol_card.addEventListener('dragover', function(event) {
                 event.preventDefault();
             });
+
+            mary_patrol_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            henry_patrol_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            vir_patrol_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            inter_patrol_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
+            pr_patrol_card.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
+
 
             waiting_card.addEventListener('dragover', function(event) {
                 event.preventDefault();
             });
 
-            on_terrain_card.addEventListener('drop', function(event) {
+            standard_patrol_card.addEventListener('drop', function(event) {
                 event.preventDefault();
                 if (draggedUserId) {
-                    window.location.href = '/create_patrol/' + draggedUserId;
+                    window.location.href = '/create_patrol/' + draggedUserId + '/standard';
+                    draggedUserId = null;
+                }
+            });
+
+            mary_patrol_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId + '/mary';
+                    draggedUserId = null;
+                }
+            });
+
+            henry_patrol_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId + '/henry';
+                    draggedUserId = null;
+                }
+            });
+
+            vir_patrol_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId + '/vir';
+                    draggedUserId = null;
+                }
+            });
+
+            inter_patrol_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId + '/inter';
+                    draggedUserId = null;
+                }
+            });
+
+            pr_patrol_card.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (draggedUserId) {
+                    window.location.href = '/create_patrol/' + draggedUserId + '/pr';
                     draggedUserId = null;
                 }
             });

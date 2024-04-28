@@ -22,6 +22,7 @@ class User(db.Model):
 class Patrol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     intervention_id = db.Column(db.Integer, db.ForeignKey('intervention.id'))
+    type = db.Column(db.String(50))
     users = db.relationship('User', backref='patrol')
 
 class Intervention(db.Model):
@@ -73,9 +74,9 @@ def home():
     else:
         return redirect(url_for("login"))
     
-@app.route("/create_patrol/<int:user_id>")
-def create_patrol(user_id):
-    new_patrol = Patrol(intervention_id=0)
+@app.route("/create_patrol/<int:user_id>/<string:patrol_type>")
+def create_patrol(user_id, patrol_type):
+    new_patrol = Patrol(type = patrol_type, intervention_id=0)
 
     db.session.add(new_patrol)
     db.session.commit()
