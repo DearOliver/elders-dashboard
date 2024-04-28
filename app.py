@@ -202,4 +202,4 @@ def drop_intervention(user_id, intervention_id):
     return redirect(url_for("home"))
 
 if __name__ == "__main__" :
-    app.run(debug = True, port = port)
+    app.run(debug = True, host = '0.0.0.0', port = port)
