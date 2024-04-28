@@ -66,25 +66,27 @@
                     <div class="row">
                         {% for patrol in patrols %}
                             {% if patrol.intervention_id == 0 %}
-                                <div class="col-md-4">
-                                    <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                    <button class="btn btn-secondary mb-3 patrol-button patrol-card" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
-                                        {% if patrol.users|length == 1 %}
-                                            <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
-                                        {% elif patrol.users|length == 2 %}
-                                            <h6 class="card-text">Adam #{{ patrol.id }}</h6>
-                                        {% elif patrol.users|length == 3 %}
-                                            <h6 class="card-text">Tango #{{ patrol.id }}</h6>
-                                        {% endif %}
-                                        {% for user in patrol.users %}
-                                            <div class="card mb-1 draggable user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
-                                                <div class="card-body text-center">
-                                                    <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                                {% if patrol.id != 0 %}
+                                    <div class="col-md-4">
+                                        <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
+                                        <button class="btn btn-secondary mb-3 patrol-button patrol-card" id="patrol-{{ patrol.id }}" value="{{ patrol.id }}" type="submit">
+                                            {% if patrol.users|length == 1 %}
+                                                <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                            {% elif patrol.users|length == 2 %}
+                                                <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                            {% elif patrol.users|length == 3 %}
+                                                <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                            {% endif %}
+                                            {% for user in patrol.users %}
+                                                <div class="card mb-1 draggable user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
+                                                    <div class="card-body text-center">
+                                                        <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        {% endfor %}
-                                    </button>
-                                </div>
+                                            {% endfor %}
+                                        </button>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -113,44 +115,48 @@
     
                     <div class="row">
                         {% for intervention in interventions %}
-                        <div class="col-md-12">
-                            <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}" value ="{{ intervention.id }}"">
-                                <div class="card-body row justify-content-around">
-                                    <h6 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
-                                    <input type="hidden" name="inter_id" value="{{ intervention.id }}">
-                                    {% if role == 'admin' %}
-                                        <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    {% endif %}
-                                </div>
-                                <div class="row">
-                                    {% for patrol in patrols %}
-                                        {% if patrol.intervention_id == intervention.id %}
-                                            <div class="col-md-4">
-                                                <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
-                                                <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
-                                                    {% if patrol.users|length == 1 %}
-                                                        <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
-                                                    {% elif patrol.users|length == 2 %}
-                                                        <h6 class="card-text">Adam #{{ patrol.id }}</h6>
-                                                    {% elif patrol.users|length == 3 %}
-                                                        <h6 class="card-text">Tango #{{ patrol.id }}</h6>
-                                                    {% endif %}
-                                                    {% for user in patrol.users %}
-                                                        <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
-                                                            <div class="card-body text-center">
-                                                                <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
-                                                            </div>
-                                                        </div>
-                                                    {% endfor %}
+                            {% if intervention.id != 0 %}
+                                <div class="col-md-12">
+                                    <div class="card bg-dark mb-1 intervention-card text-white" id="intervention-{{ intervention.id }}" value ="{{ intervention.id }}"">
+                                        <div class="card-body row justify-content-around">
+                                            <h6 class="card-text col-md-10">{{ intervention.name }} #{{ intervention.id }}</h6>
+                                            <input type="hidden" name="inter_id" value="{{ intervention.id }}">
+                                            {% if role == 'admin' %}
+                                                <button type="submit" class="btn btn-danger btn-sm delete-inter-button" id="inter-{{ intervention.id }}">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            {% for patrol in patrols %}
+                                                {% if patrol.intervention_id == intervention.id %}
+                                                    {% if patrol.id != 0 %}
+                                                        <div class="col-md-4">
+                                                            <input type="hidden" name="patrol_id" value="{{ patrol.id }}">
+                                                            <button class="btn btn-secondary mb-3 patrol-button" id="patrol-{{ patrol.id }}" type="submit">
+                                                                {% if patrol.users|length == 1 %}
+                                                                    <h6 class="card-text">Lincoln #{{ patrol.id }}</h6>
+                                                                {% elif patrol.users|length == 2 %}
+                                                                    <h6 class="card-text">Adam #{{ patrol.id }}</h6>
+                                                                {% elif patrol.users|length == 3 %}
+                                                                    <h6 class="card-text">Tango #{{ patrol.id }}</h6>
+                                                                {% endif %}
+                                                                {% for user in patrol.users %}
+                                                                    <div class="card mb-1 user-card d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" id="patrol-{{ patrol.id }}">
+                                                                        <div class="card-body text-center">
+                                                                            <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </button>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
     
