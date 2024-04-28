@@ -4,4 +4,3 @@ Flask-Login
 Flask-WTF
 mysql-connector-python
 psycopg2
-os
