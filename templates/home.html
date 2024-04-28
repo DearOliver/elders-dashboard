@@ -221,10 +221,13 @@
 
             patrol_cards.forEach(function(card) {
                 card.addEventListener('drop', function(event) {
-                    console.log("TEST")
                     patrol_id = card.getAttribute('value')
-                    draggedUserId = null; 
-                    patrol_id = null; 
+                    event.preventDefault();
+                    if (draggedUserId) {
+                        window.location.href = '/drop_patrol/' + draggedUserId + '/' + patrol_id;
+                        draggedUserId = null; 
+                        patrol_id = null; 
+                    }
                 }
                 );
             });
@@ -234,10 +237,10 @@
                     intervention_id = card.getAttribute('value')
                     event.preventDefault();
                     if (draggedUserId) {
-                    window.location.href = '/drop_intervention/' + draggedUserId + '/' + intervention_id;
-                    draggedUserId = null; 
-                    intervention_id = null; 
-                }
+                        window.location.href = '/drop_intervention/' + draggedUserId + '/' + intervention_id;
+                        draggedUserId = null; 
+                        intervention_id = null; 
+                    }
                 });
             });
         });
