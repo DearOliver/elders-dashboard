@@ -32,8 +32,9 @@ class Intervention(db.Model):
 def cleanup_patrols() :
     patrols = Patrol.query.all()
     for patrol in patrols:
-        if User.query.filter_by(patrol_id=patrol.id).count() == 0:
-            Patrol.query.filter_by(id=patrol.id).delete()
+        if patrol.id != 0 :
+            if User.query.filter_by(patrol_id=patrol.id).count() == 0:
+                Patrol.query.filter_by(id=patrol.id).delete()
     db.session.commit()
 
 @app.route("/")
