@@ -30,6 +30,19 @@ class Intervention(db.Model):
     name = db.Column(db.String(50), nullable=False)
     patrols = db.relationship('Patrol', backref='intervention')
 
+class Law(db.Model):
+    id = db.Column(db.String(10), primary_key=True)
+    label = db.Column(db.String(250))
+    min_fine = db.Column(db.Integer)
+    nom_fine = db.Column(db.Integer)
+    max_fine = db.Column(db.Integer)
+    min_jail = db.Column(db.Integer)
+    max_jail = db.Column(db.Integer)
+    can_search = db.Column(db.Boolean)
+    add_to_record = db.Column(db.Boolean)
+    proc_needed = db.Column(db.Boolean)
+    type = db.Column(db.Integer, nullable=False)
+
 def cleanup_patrols() :
     patrols = Patrol.query.all()
     for patrol in patrols:
@@ -69,6 +82,14 @@ def home():
         interventions = Intervention.query.all()
         users_waiting = User.query.filter_by(patrol_id=0).order_by(User.matricule.asc())
         return render_template("home.html", patrols=patrols, users_waiting=users_waiting, role=role, interventions=interventions)
+    else:
+        return redirect(url_for("login"))
+    
+@app.route("/laws")
+def laws():
+    if "user_id" in session:
+        laws = Law.query.all()
+        return render_template("laws.html", laws=laws)
     else:
         return redirect(url_for("login"))
     

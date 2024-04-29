@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CSS -->
+    <style>
+        body {
+            text-align: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1f1f1f;
+            color: #FFFFFF; /* Couleur du texte */
+        }
+
+        .container {
+        margin: auto; /* Centrer le conteneur horizontalement */
+        }
+
+        .big-image {
+            height: auto;
+            margin-top: 30px;
+            max-width: 100%;
+        }
+
+        .txt-green {
+            color : green;
+        }
+
+        .txt-red {
+            color : red;
+        }
+
+        .txt-min {
+            color : #C6FFEE;
+        }
+
+        .txt-nom {
+            color : #68D1FF ;
+        }
+
+        .txt-max {
+            color : #5981FF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+            <a class="navbar-brand" href="#">DASHBOARD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Dispatch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Codes de Lois</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link 3</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <h1 class="mt-5">CODES DE LOIS</h1>
+
+        <img src="{{ url_for('static', filename='img/fullmap.jpg') }}" class="big-image">
+
+        <div class = "mt-3 w-100">
+            <table class="table-dark table-striped w-100">
+                <thead>
+                    <tr>
+                        <th scope="col">Art.</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Fouille</th>
+                        <th scope="col">Casier</th>
+                        <th scope="col">Procureur</th>
+                        <th scope="col">Amende Min.</th>
+                        <th scope="col">Amende Nom.</th>
+                        <th scope="col">Amende Max.</th>
+                        <th scope="col">Prison Min.</th>
+                        <th scope="col">Prison Max.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for law in laws %}
+                    <tr>
+                        <th scope="row" class="{% if law.type == 0 %}table-primary{% elif law.type == 1 %}table-warning{% else %}table-danger{% endif %} col-1">{{ law.id }}</th>
+                        <td colspan="1" class="col-3">{{ law.label }}</td>
+                        <td colspan="1" class="col-1 {% if law.can_search == true %}txt-green{% else %}txt-red{% endif %}">{% if law.can_search == true %}Autorisée{% else %}Interdite{% endif %}</td>
+                        <td colspan="1" class="col-1 {% if law.add_to_record == true %}txt-green{% else %}txt-red{% endif %}">{% if law.add_to_record == true %}Oui{% else %}Non{% endif %}</td>
+                        <td colspan="1" class="col-1 {% if law.proc_needed == true %}txt-green{% else %}txt-red{% endif %}">{% if law.proc_needed == true %}Nécessaire{% else %}Facultatif{% endif %}</td>
+                        <td colspan="1" class="col-1 txt-min">{{ law.min_fine }}$</td>
+                        <td colspan="1" class="col-1 txt-nom">{{ law.nom_fine }}$</td>
+                        <td colspan="1" class="col-1 txt-max">{{ law.max_fine }}$</td>
+                        <td colspan="1" class="col-1 txt-min">{{ law.min_jail }} min</td>
+                        <td colspan="1" class="col-1 txt-max">{{ law.max_jail }} min</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3 class="mt-5">WORK IN PROGRESS ⌛</h3>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script> <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.js"></script> <!-- Popper.js -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.js"></script> <!-- Bootstrap JS -->
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+</html>
