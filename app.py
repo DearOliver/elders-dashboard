@@ -66,11 +66,10 @@ def login():
 def home():
     if "user_id" in session:
         role = session.get("role")
-        matricule = session.get("matricule")
         patrols = Patrol.query.all()
         interventions = Intervention.query.all()
         users_waiting = User.query.filter_by(patrol_id=0)
-        return render_template("home.html", matricule=matricule, patrols=patrols, users_waiting=users_waiting, role=role, interventions=interventions)
+        return render_template("home.html", patrols=patrols, users_waiting=users_waiting, role=role, interventions=interventions)
     else:
         return redirect(url_for("login"))
     

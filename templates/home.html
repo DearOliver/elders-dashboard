@@ -375,6 +375,14 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            setInterval(function() {
+                window.location.href = '/home'
+            }, 5000);
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             var deleteInterButtons = document.querySelectorAll('.delete-inter-button');
             
             deleteInterButtons.forEach(function(button) {
