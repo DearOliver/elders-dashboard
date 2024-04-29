@@ -53,8 +53,6 @@ def login():
         if user and (user.password == password) :
             session["user_id"] = user.id
             session["username"] = user.username
-            session["matricule"] = user.matricule
-            session["role"] = user.role
 
             return redirect(url_for("home"))
         else:
@@ -65,10 +63,11 @@ def login():
 @app.route("/home")
 def home():
     if "user_id" in session:
-        role = session.get("role")
+        user = User.query.filter_by(id = session["user_id"]).first()
+        role = user.role
         patrols = Patrol.query.all()
         interventions = Intervention.query.all()
-        users_waiting = User.query.filter_by(patrol_id=0)
+        users_waiting = User.query.filter_by(patrol_id=0).order_by(User.matricule.asc())
         return render_template("home.html", patrols=patrols, users_waiting=users_waiting, role=role, interventions=interventions)
     else:
         return redirect(url_for("login"))
