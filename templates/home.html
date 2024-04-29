@@ -9,6 +9,10 @@
     <style>
         body {
             text-align: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1f1f1f;
+            color: #FFFFFF; /* Couleur du texte */
         }
 
         .container {
@@ -22,6 +26,16 @@
             display: flex; /* Utilisation de Flexbox */
             align-items: center; /* Centrage vertical */
             justify-content: center; /* Centrage horizontal */
+        }
+
+        .bg-lightdark {
+            background-color: #4a4a4a; /* Remplacez #007bff par le code couleur de votre choix */
+            color: #FFFFFF; /* Couleur du texte */
+        }
+
+        .bg-lightdark2 {
+            background-color: #6e6e6e; /* Remplacez #007bff par le code couleur de votre choix */
+            color: #FFFFFF; /* Couleur du texte */
         }
 
         .bg-lssd {
@@ -76,15 +90,36 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+            <a class="navbar-brand" href="#">DASHBOARD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link 3</a>
+                    </li>
+                    <!-- Add more menu items as needed -->
+                </ul>
+            </div>
+        </nav>
+
         <h1 class="mt-5">DISPATCH</h1>
         <br>
 
-        <button class="btn btn-secondary waiting-button mb-3 w-75" id = "waiting-card">
-            <h5 class="card-title">EN ATTENTE DE DISPATCH</h5>
+        <button class="btn waiting-button bg-lightdark mb-3 w-75" id = "waiting-card">
+            <h5 class="card-title">STAND-BY</h5>
             <div class = "row m-2 justify-content-right">
                 {% for user in users_waiting %}
-                    <div class="card draggable user-card mr-2 ml-2 d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true">
+                    <div class="card draggable user-card mr-2 ml-2 d-flex align-items-center {% if user.matricule >= 300 %}bg-lssd{% elif user.matricule < 300 %}bg-lspd{% endif %}" data-user-id="{{ user.id }}" draggable="true" data-toggle="tooltip" title="{{ user.name }}">
                         <div class="card-body text-center">
                             <p class="card-text d-flex align-items-center justify-content-center h-100 font-weight-bold">{{ user.matricule }}</p>
                         </div>
@@ -95,19 +130,19 @@
 
         <div class="row justify-content-around">
 
-            <div class="card bg-light mb-3 col-md-5" id="active-card">
+            <div class="card bg-lightdark2 mb-3 col-md-5" id="active-card">
                 <div class="card-body">
-                    <h5 class="card-title">SUR LE TERRAIN</h5>
+                    <h5 class="card-title mb-3">PATROLS</h5>
 
                     {% if role == 'admin' %}
                         <div class="row justify-content-around mb-3">
-                            <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="terrain"><i class="fa-solid fa-car"></i></button>
-                            <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="terrain"><i class="fa-solid fa-motorcycle"></i></button>
-                            <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="terrain"><i class="fa-solid fa-helicopter"></i></button>
-                            <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="terrain"><i class="fa-solid fa-bolt"></i></button>
-                            <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="terrain"><i class="fa-solid fa-person-rifle"></i></button>
-                            <button class="btn bg-pr btn-lg patrol-type-card" patrol-type="pr" type="terrain"><i class="fa-solid fa-paw"></i></button>
-                            <button class="btn bg-db btn-lg patrol-type-card" patrol-type="db" type="terrain"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="terrain" data-toggle="tooltip" title="Standard Patrol"><i class="fa-solid fa-car"></i></button>
+                            <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="terrain" data-toggle="tooltip" title="Mary Patrol"><i class="fa-solid fa-motorcycle"></i></button>
+                            <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="terrain" data-toggle="tooltip" title="Henry Patrol"><i class="fa-solid fa-helicopter"></i></button>
+                            <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="terrain" data-toggle="tooltip" title="VIR Patrol"><i class="fa-solid fa-bolt"></i></button>
+                            <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="terrain" data-toggle="tooltip" title="SWAT/SEB Patrol"><i class="fa-solid fa-person-rifle"></i></button>
+                            <button class="btn bg-pr btn-lg patrol-type-card" patrol-type="pr" type="terrain" data-toggle="tooltip" title="Park Rangers Patrol"><i class="fa-solid fa-paw"></i></button>
+                            <button class="btn bg-db btn-lg patrol-type-card" patrol-type="db" type="terrain" data-toggle="tooltip" title="Detective Bureau Patrol"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     {% endif %}
     
@@ -157,9 +192,9 @@
                 </div>
             </div>
 
-            <div class="card bg-light mb-3 col-md-5">
+            <div class="card bg-lightdark2 mb-3 col-md-6">
                 <div class="card-body">
-                    <h5 class="card-title">INTERVENTIONS</h5>
+                    <h5 class="card-title">MISSIONS</h5>
                     <br>
     
                     {% if role == 'admin' %}
@@ -187,14 +222,14 @@
                                             <input type="hidden" name="inter_id" value="{{ intervention.id }}">
                                             {% if role == 'admin' %}
                                                 <div class="row w-100 justify-content-around mt-2 mb-3">
-                                                    <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-car"></i></button>
-                                                    <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-motorcycle"></i></button>
-                                                    <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-helicopter"></i></button>
-                                                    <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-bolt"></i></button>
-                                                    <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-person-rifle"></i></button>
-                                                    <button class="btn bg-otages btn-lg patrol-type-card" patrol-type="otages" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-suitcase-medical"></i></button>
-                                                    <button class="btn bg-clear btn-lg patrol-type-card" patrol-type="clear" type="intervention" value="{{ intervention.id }}"><i class="fa-solid fa-broom"></i></button>
-                                                    <button type="submit" class="btn btn-danger btn-lg delete-inter-button" id="inter-{{ intervention.id }}">
+                                                    <button class="btn bg-standard btn-lg patrol-type-card" patrol-type="standard" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="Standard Patrol"><i class="fa-solid fa-car"></i></button>
+                                                    <button class="btn bg-mary btn-lg patrol-type-card" patrol-type="mary" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="Mary Patrol"><i class="fa-solid fa-motorcycle"></i></button>
+                                                    <button class="btn bg-henry btn-lg patrol-type-card" patrol-type="henry" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="Henry Patrol"><i class="fa-solid fa-helicopter"></i></button>
+                                                    <button class="btn bg-vir btn-lg patrol-type-card" patrol-type="vir" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="VIR Patrol"><i class="fa-solid fa-bolt"></i></button>
+                                                    <button class="btn bg-inter btn-lg patrol-type-card" patrol-type="inter" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="SWAT/SEB Squad"><i class="fa-solid fa-person-rifle"></i></button>
+                                                    <button class="btn bg-otages btn-lg patrol-type-card" patrol-type="otages" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="Hostage Assistance"><i class="fa-solid fa-suitcase-medical"></i></button>
+                                                    <button class="btn bg-clear btn-lg patrol-type-card" patrol-type="clear" type="intervention" value="{{ intervention.id }}" data-toggle="tooltip" title="Zone Clearing"><i class="fa-solid fa-broom"></i></button>
+                                                    <button type="submit" class="btn btn-danger btn-lg delete-inter-button" data-toggle="tooltip" title="Delete Mission" id="inter-{{ intervention.id }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -253,6 +288,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -328,18 +369,6 @@
                     }
                 }
                 );
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var waitingButtons = document.querySelectorAll('.waiting-button');
-            
-            waitingButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    window.location.href = '/join_patrol/' + 0;
-                });
             });
         });
     </script>

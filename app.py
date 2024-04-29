@@ -38,11 +38,11 @@ def cleanup_patrols() :
                 Patrol.query.filter_by(id=patrol.id).delete()
     db.session.commit()
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+#@app.route("/")
+#def index():
+#    return render_template("index.html")
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
