@@ -90,7 +90,7 @@
     </style>
 </head>
 <body>
-    <div class="container-fluid" id = "DATA" value = "{{ role }}">
+    <div class="container-fluid" id = "DATA" role = "{{ role }}" user_id = "{{ user.id }}">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
             <a class="navbar-brand" href="#">DASHBOARD</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -303,7 +303,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var dataDIV = document.getElementById('DATA');
-            role = dataDIV.getAttribute('value')
+            role = dataDIV.getAttribute('role')
 
             if (role == "admin") {
                 var userCards = document.querySelectorAll('.user-card');
@@ -380,6 +380,50 @@
                     );
                 });
             }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patrolTypeButtons = document.querySelectorAll('.patrol-type-card');
+
+            var dataDIV = document.getElementById('DATA');
+            user_id = dataDIV.getAttribute('user_id');
+
+            var patrolType = null;
+            
+            patrolTypeButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    patrolType = button.getAttribute('patrol-type');
+                    window.location.href = '/create_patrol/' + user_id + '/' + patrolType;
+                    patrolType = null;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patrolButtons = document.querySelectorAll('.patrol-button');
+            
+            patrolButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var patrolId = this.id.split('-')[1];
+                    window.location.href = '/join_patrol/' + patrolId;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var waitingButtons = document.querySelectorAll('.waiting-button');
+            
+            waitingButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    window.location.href = '/join_patrol/' + 0;
+                });
+            });
         });
     </script>
 
